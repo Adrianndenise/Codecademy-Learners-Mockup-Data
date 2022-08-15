@@ -1,0 +1,90 @@
+--View Tables
+SELECT *
+FROM users
+LIMIT 25;
+
+SELECT *
+FROM progress
+LIMIT 25;
+
+
+--.edu learners located in NY
+SELECT COUNT(*) 
+FROM users
+WHERE city = 'New York'
+AND email_domain LIKE '%edu';
+
+--Codeacademy learners using mobile app
+SELECT COUNT(*)
+FROM users
+WHERE mobile_app = 'mobile-user';
+
+--Sign Up Counts
+SELECT 
+   strftime('%H', sign_up_at) AS 'Sign Up Hr',
+   COUNT(*) AS 'Sign Up Count'
+FROM users
+GROUP BY 1
+LIMIT 20;
+
+
+--Join Tables
+SELECT *
+FROM users 
+JOIN progress 
+  ON users.user_id = progress.user_id
+  LIMIT 10;
+
+--Diff schools prefer diff domains
+WITH combine AS 
+(SELECT *
+FROM users
+JOIN progress
+  ON users.user_id = progress. user_id),
+classes AS
+(SELECT COUNT(learn_cpp), COUNT(learn_sql), COUNT(learn_html), COUNT(learn_javascript), COUNT(learn_java)
+ FROM combine
+ WHERE email_domain LIKE "%.edu"
+  AND (learn_cpp = "completed" OR learn_cpp = "started"))
+SELECT *
+FROM classes;
+
+--Courses NY Students are taking
+WITH combine AS 
+(SELECT *
+FROM users
+JOIN progress
+  ON users.user_id = progress. user_id),
+classes AS
+(SELECT COUNT(learn_cpp), COUNT(learn_sql), COUNT(learn_html), COUNT(learn_javascript), COUNT(learn_java)
+ FROM combine
+ WHERE email_domain LIKE '%edu'
+  AND city = 'New York'
+  AND (learn_cpp = 'completed' OR learn_cpp = 'started'))
+SELECT *
+FROM classes;
+
+--Courses Chicago Students are taking
+WITH combine AS 
+(SELECT *
+FROM users
+JOIN progress
+  ON users.user_id = progress. user_id),
+classes AS
+(SELECT COUNT(learn_cpp), COUNT(learn_sql), COUNT(learn_html), COUNT(learn_javascript), COUNT(learn_java)
+ FROM combine
+ WHERE email_domain LIKE '%edu'
+  AND city = 'Chicago'
+  AND (learn_cpp = 'completed' OR learn_cpp = 'started'))
+SELECT *
+FROM classes;
+
+
+
+
+
+
+
+
+
+
